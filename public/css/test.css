@@ -1,0 +1,12 @@
+div {
+  border-width: 10px;
+  border-color: red transparent transparent transparent;
+  border-style: solid dashed dashed dashed;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+h1 {
+  width: 30px;
+  height: 40px;
+}

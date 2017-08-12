@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/public/css/main.css">
+    <script type="text/javascript" src="public/js/jquery.js"></script>
+    <link rel="stylesheet" href="../public/css/reset.css">
+    <link rel="stylesheet" href="../public/css/main.css">
+</head>
+<body>
+<header>
+    <ul class="nav">
+         <li><a href="http://localhost:8081/">首页</a></li>
+        {% for category in categories -%}
+       <li><a href="/?category={{category.id}}">{{category.name}}</a></li>
+        {%- endfor %}
+</ul>
+</header>
+<div class="userbox">
+{% if userInfo._id -%}
+<div class="userinfo">
+
+    {% if userInfo.isAdmin %}
+    <p>您好管理员<a href="/admin">后台管理页面</a></p>
+    {% else %}
+    <span>{{userInfo.name}}</span><p>欢迎登陆我的博客</p>
+    {% endif %}
+    <button class="logout">退出</button>
+
+</div>
+{%- else %}
+<div class="regsiter">
+    <p>注册</p>
+    <label>账号：<input type="text" name="username"/></label>
+    <label>密码：<input type="password" name="password" /></label>
+    <label>重复密码：<input type="password" name="repassword"></label>
+    <button id="submit">提交</button>
+    <p class="regsitermsg"></p>
+</div>
+
+<div class="login">
+    <p>登录</p>
+    <label>账号：<input type="text" name="username"></label>
+    <label>密码：<input type="password" name="password"></label>
+    <button id="submitlogin">提交</button>
+    <p class="loginmassage"></p>
+
+</div>
+{%- endif %}
+</div>
+<div class="bg">
+
+</div>
+<div class="main">
+    {% for content in contents -%}
+    <div class="listbox">
+    <h1>{{content.title}}</h1>
+        <p>
+            作者：<span>{{content.user.username}}</span>
+            时间：<span>{{content.addTime|date("Y-m-d H:i:s",-8*60)}}</span>
+            阅读：<span>{{content.views}}</span>
+            评论：<span>{{content.comment.length}}</span>
+        </p>
+        <p>
+            简介：<span>{{content.description}}</span>
+        </p>
+        <a href="/view?contentid={{content.id}}">阅读全文</a>
+        <hr>
+    </div>
+    {%-endfor  %}
+    <div class="page">
+        {%if page<=1%}
+            <p class="page-before">无法点击上一页</p>
+        {%else%}
+            <a class="page-before" href="/?page={{page-1}}&category={{category}}">上一页</a>
+        {%endif%}
+
+        {%if pages>0 %}
+        {{page}}/{{pages}}
+        {%endif%}
+
+        {%if page< pages%}
+            <a class="page-next" href="/?page={{page+1}}&category={{category}}">下一页</a>
+        {%else%}
+            <p class="page-next" >无法点击下一页</p>
+        {%endif%}
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+    //        $("#submit").click(function () {
+    //            $("div").load("/api/user",{
+    //                username:"yyt",
+    //
+    //            })
+    //        });
+    $("#submit").on("click", function () {
+        $.ajax({
+            type: "post",
+            url: "/api/user/register",
+            contenType: "application/json; charset=utf-8",
+            data: {
+                username: $("body").find("[name=username]").val(),
+                password: $("body").find("[name=password]").val(),
+                repassword: $("body").find("[name=repassword]").val(),
+
+            },
+            dataType: "json",
+            success: function (result) {
+                $(".regsitermsg").html(result.message);
+//                if (result.code == 0) {
+//                    setTimeout(function () {
+//                        $(".login").show();
+//                        $(".regsiter").hide();
+//                    }, 3000)
+//                }
+            }
+        })
+    });
+
+    $("#submitlogin").on("click", function () {
+        $.ajax({
+            type: "post",
+            url: "/api/user/login",
+            data: {
+                username: $(".login").find("[name=username]").val(),
+                password: $(".login").find("[name=password]").val(),
+            },
+            dataType: "json",
+            success: function (result) {
+                $(".loginmassage").html(result.message);
+                if (result.code == 0) {
+//                    setTimeout(function () {
+//                        $(".userinfo").show();
+//                        $(".regsiter").hide();
+//                        $(".login").hide();
+//                        $(".userinfo span").html(result.userInfo.name)
+//                    }, 3000)
+                    window.location.reload();
+                }
+            }
+
+        })
+    })
+
+
+        $(".logout").on("click",function () {
+            $.ajax({
+                type:"get",
+                url:"/api/user/logout",
+                success:function (result) {
+                    if(!result.code){
+                        window.location.reload();
+                    }
+                }
+            })
+        })
+
+
+</script>
+
+</body>
+</html>

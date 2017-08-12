@@ -1,0 +1,57 @@
+@h:10px;
+
+div{
+  .triangle(top);
+}
+h1{
+
+  .test(30px,40px);
+
+}
+
+.test(@one,@two){
+  width: @one;
+  height:@two;
+
+}
+
+.triangle(bottom,@bw:10px){
+
+
+  border-width: @bw;
+  border-color: transparent transparent red transparent;
+  border-style: dashed dashed solid dashed;
+
+}
+.triangle(top,@bw:10px){
+
+
+  border-width: @bw;
+  border-color: red transparent transparent transparent;
+  border-style: solid dashed dashed dashed;
+
+}
+
+.triangle(right,@bw:10px){
+
+  border-width: @bw;
+  border-color: transparent red transparent transparent;
+  border-style: dashed solid dashed dashed;
+
+}
+
+
+.triangle(left,@bw:10px){
+
+
+  border-width: @bw;
+  border-color: transparent transparent transparent red;
+  border-style: dashed dashed dashed solid;
+
+}
+
+.triangle(@_,@bw:10px){
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}

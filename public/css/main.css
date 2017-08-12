@@ -1,0 +1,79 @@
+header{
+    height: 50px;
+    background: #0f0f0f;
+}
+
+.nav{
+    float: right;
+    background-color: #2b333b;
+    height: 50px;
+    margin-right: 10px;
+
+}
+.nav li{
+    display: inline;
+    line-height: 50px;
+
+}
+
+.nav a{
+    display: inline-block;
+    color:white;
+    padding:0 25px;
+}
+.nav a:hover{
+    background-color: red;
+    color:white;
+}
+
+.userbox{
+    clear: both;
+    width: 200px;
+    float: right;
+    position: fixed;
+    left:85%;
+    bottom: 30px;
+
+    background-color: lightskyblue;
+    padding: 10px;
+    border-radius:4px;
+}
+.userbox input{
+    border-radius:4px;
+}
+.regsitermsg,.loginmassage{
+    color:red;
+}
+
+
+
+.bg{
+    width: 100%;
+    height:220px ;
+    background: url("/public/img/bg-teacher.png");
+    background-size: cover;
+}
+
+.main{
+    width: 1000px;
+    /*background-color: blue;*/
+    margin: 0 auto;
+}
+.page{
+    background-color: #2b542c;
+    text-align: center;
+}
+.page-before{
+    float: left;
+}
+.page-next{
+    float: right;
+}
+hr{
+    color: #d4d4d4;
+    margin: 20px 0;
+}
+
+/*.userinfo .regsiter .login{*/
+    /*float: right;*/
+/*}*/

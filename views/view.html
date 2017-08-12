@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/public/css/main.css">
+    <script type="text/javascript" src="public/js/jquery.js"></script>
+    <link rel="stylesheet" href="../public/css/reset.css">
+    <link rel="stylesheet" href="../public/css/main.css">
+    <style>
+        h1{
+           text-align: center;
+            font-size: 40px;
+        }
+        .contentinfo{
+            text-align: center;
+            font-size: 12px;
+            color: #66512c;
+        }
+
+        .content{
+
+
+            font-family: "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "Hiragino Sans GB", "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.7;
+
+
+        }
+
+        .contenthead{
+            margin:20px 0;
+        }
+
+        comment textarea{
+            width: 100%;
+        }
+        textarea{
+            width: 1000px;
+            height: 140px;
+            resize: none;
+        }
+
+        #commentBtn{
+            background-color: black; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        #commentBtn:hover{
+            background-color: red;
+            color:white;
+        }
+
+
+        pre{
+             white-space:pre-wrap;/*css-3*/
+             white-space:-moz-pre-wrap;/*Mozilla,since1999*/
+                /*white-space:-pre-wrap;!*Opera4-6*!*/
+            white-space:-o-pre-wrap;/*Opera7*/
+            word-wrap:break-word;/*InternetExplorer5.5+*/
+            }
+    </style>
+</head>
+<body>
+<header>
+    <ul class="nav">
+         <li><a href="http://localhost:8081/">首页</a></li>
+        {% for category in categories -%}
+       <li><a href="/?category={{category.id}}">{{category.name}}</a></li>
+        {%- endfor %}
+</ul>
+</header>
+<div class="userbox">
+{% if userInfo._id -%}
+<div class="userinfo">
+
+    {% if userInfo.isAdmin %}
+    <p>您好管理员<a href="/admin">后台管理页面</a></p>
+    {% else %}
+    <span>{{userInfo.name}}</span><p>欢迎登陆我的博客</p>
+    {% endif %}
+    <button class="logout">退出</button>
+
+</div>
+{%- else %}
+<div class="regsiter">
+    <p>注册</p>
+    <label>账号：<input type="text" name="username"/></label>
+    <label>密码：<input type="password" name="password" /></label>
+    <label>重复密码：<input type="password" name="repassword"></label>
+    <button id="submit">提交</button>
+    <p class="regsitermsg"></p>
+</div>
+
+<div class="login">
+    <p>登录</p>
+    <label>账号：<input type="text" name="username"></label>
+    <label>密码：<input type="password" name="password"></label>
+    <button id="submitlogin">提交</button>
+    <p class="loginmassage"></p>
+
+</div>
+{%- endif %}
+</div>
+<div class="bg">
+
+</div>
+<div class="main">
+
+    <div class="contenthead">
+    <h1>{{content.title}}</h1>
+        <div class="contentinfo">
+            作者：<span>{{content.user.username}}</span>
+            时间：<span>{{content.addTime|date("Y-m-d H:i:s",-8*60)}}</span>
+            阅读：<span>{{content.views}}</span>
+            评论：<span>{{content.comment.length}}</span>
+            简介：<span>{{content.description}}</span>
+        </div>
+    </div>
+
+        <hr>
+        <pre width="20" class="content">{{content.content}}</pre>
+        <hr>
+
+    <div class="comment">
+        <div>
+            <p>评论</p>
+
+            {%if userInfo._id%}
+
+            <textarea></textarea>
+            <input type="hidden" id="contentId" value="{{content.id}}">
+            <button id="commentBtn">提交</button>
+
+            {%else%}
+
+            <p>你还没有登录，请先登录</p>
+            {%endif%}
+        </div>
+
+        <div id="messagelist">
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<script>
+    $.ajax({
+        type:"get",
+        url:"/api/comment",
+        contenType: "application/json; charset=utf-8",
+        data:{
+            contentid:$("#contentId").val(),
+        },
+        success: function (responseData) {
+            renderComment(responseData.comment.reverse())
+        }
+    })
+
+    $("#commentBtn").on("click", function () {
+        $.ajax({
+            type: "post",
+            url: "/api/comment/post",
+            contenType: "application/json; charset=utf-8",
+            data: {
+                contentid:$("#contentId").val(),
+                content: $(".comment textarea").val(),
+            },
+            dataType: "json",
+            success: function (responseData) {
+               $(".comment textarea").val("");
+                renderComment(responseData.commentData.comment.reverse())
+            }
+        })
+    });
+
+    function renderComment(data) {
+        var html="";
+        for(var i=0;i<data.length;i++){
+            html+="<div><span>用户名称："+data[i].username+"</span>+|+<span>评论时间："+data[i].postTime+"</span><p>评论内容："+data[i].content+"</p></div><hr>";
+        }
+        console.log(html);
+
+        $("#messagelist").html(html);
+    }
+</script>
+
+</body>
+</html>
